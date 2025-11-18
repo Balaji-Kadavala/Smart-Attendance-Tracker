@@ -317,9 +317,25 @@ const STORAGE_KEY = 'smartStudents_final_v3';
 /* --------- helpers --------- */
 function el(id){ return document.getElementById(id); }
 
-/* load/save */
+/* load/save localStorage (kept for sync and offline) */
 function loadData(){ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { students: [], attendance: {} }; }
-function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+function saveDataLocal(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+
+/* When we push to Firebase we'll call pushDataToFirebase(d) if available.
+   pushDataToFirebase is provided by the module below and is non-blocking.
+*/
+function saveData(d){
+  // update localStorage first for immediate UI responsiveness
+  saveDataLocal(d);
+  // if firebase push is available, call it (don't await)
+  if(window.pushDataToFirebase) {
+    try {
+      window.pushDataToFirebase(d);
+    } catch(e){
+      console.warn('Firebase push failed', e);
+    }
+  }
+}
 
 /* year prefix helpers: first year uses current year's last two digits */
 function yearPrefixFor(year){
@@ -358,17 +374,18 @@ function openStudent(){ hideAll(); el('student-screen').classList.remove('hidden
 function openFaculty(){ hideAll(); el('faculty-login').classList.remove('hidden'); }
 
 /* ensure both role buttons same color initially */
-el('btn-student').style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary');
-el('btn-student').style.color = '#fff';
-el('btn-faculty').style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary');
-el('btn-faculty').style.color = '#fff';
+try {
+  el('btn-student').style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary');
+  el('btn-student').style.color = '#fff';
+  el('btn-faculty').style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary');
+  el('btn-faculty').style.color = '#fff';
+} catch(e){ /* ignore if elements not present yet */ }
 
 // ---------- Faculty Authentication ----------
 const FACULTY_CREDENTIALS = {
     username: "faculty",
     password: "fac123"
 };
-
 
 /* --------- faculty auth (demo) --------- */
 function facultyLogin() {
@@ -431,7 +448,6 @@ function todayKey(session, year){
   return `${y}-${mo}-${da}_${session}_${year}`;
 }
 
-
 /* --------- Academic working days --------- */
 const ACADEMIC_START = new Date(2025,5,12); // June 12, 2025
 function academicEndForStart(){ return new Date(ACADEMIC_START.getFullYear()+1,3,30); } // April 30 next year
@@ -488,7 +504,7 @@ function saveMarks(){
   const present = [];
   checkboxes.forEach(cb => { if(cb.checked) present.push(cb.dataset.pin); });
   data.attendance[key] = { present, locked: true };
-  saveData(data);
+  saveData(data); // this now saves locally and pushes to Firebase (if available)
   alert('Attendance saved & locked for ' + key);
   renderMarkTable();
 }
@@ -615,10 +631,114 @@ function exportCSV(){
 }
 
 /* --------- init UI --------- */
-backHome();
-renderEditTable();
+/* NOTE: we wait for firebase sync if available (window.firebaseSyncReady),
+   otherwise proceed immediately — this keeps behavior identical but ensures
+   data from Firebase is used when present.
+*/
+function startAppAfterSync(){
+  if(window.firebaseSyncReady && typeof window.firebaseSyncReady.then === 'function'){
+    window.firebaseSyncReady.then(() => {
+      // firebase sync completed
+      renderEditTable();
+      backHome();
+    }).catch(err=>{
+      console.warn('Firebase sync failed, continuing with local data', err);
+      renderEditTable();
+      backHome();
+    });
+  } else {
+    renderEditTable();
+    backHome();
+  }
+}
+startAppAfterSync();
+
 // expose debug
-window._debug = { loadData, saveData };
+window._debug = { loadData, saveDataLocal };
+
+</script>
+
+<!-- ===== Firebase module (adds functions pushDataToFirebase and firebaseSyncReady) ===== -->
+<script type="module">
+  // Modular SDK imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCNGm7gErFVFS-zmd2zhnOGDBHqzK7hwUA",
+    authDomain: "smart-attendance-tracker-dc3e0.firebaseapp.com",
+    projectId: "smart-attendance-tracker-dc3e0",
+    storageBucket: "smart-attendance-tracker-dc3e0.firebasestorage.app",
+    messagingSenderId: "874135444986",
+    appId: "1:874135444986:web:11676820f7fe7fc6ab5843",
+    measurementId: "G-43FXHWMGZY"
+    // Note: databaseURL will be used when getting database below
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  // use the provided RTDB URL
+  const DATABASE_URL = "https://smart-attendance-tracker-dc3e0-default-rtdb.firebaseio.com/";
+  const db = getDatabase(app, DATABASE_URL);
+
+  // path where we store the app data
+  const APP_PATH = '/appData';
+
+  // helper: read data once from firebase and return parsed object (or null)
+  async function readAppDataFromFirebase(){
+    try{
+      const snap = await get(ref(db, APP_PATH));
+      if(snap && snap.exists()){
+        return snap.val();
+      }
+      return null;
+    } catch(e){
+      console.warn('Firebase read error', e);
+      return null;
+    }
+  }
+
+  // helper: push data object (same shape as localStorage) to firebase
+  async function pushAppDataToFirebase(obj){
+    try{
+      await set(ref(db, APP_PATH), obj);
+      // console.log('Pushed data to Firebase');
+    } catch(e){
+      console.warn('Firebase write error', e);
+    }
+  }
+
+  // Expose a push function to the main script (non-blocking usage)
+  window.pushDataToFirebase = (data) => {
+    // fire-and-forget
+    pushAppDataToFirebase(data).catch(e => console.warn('push failed', e));
+  };
+
+  // Provide a promise that resolves after initial sync (so main script waits if desired)
+  window.firebaseSyncReady = (async function(){
+    try{
+      const remote = await readAppDataFromFirebase();
+      if(remote){
+        // remote data exists: write to localStorage so main code can use it synchronously
+        localStorage.setItem('smartStudents_final_v3', JSON.stringify(remote));
+      } else {
+        // no remote data: push local data to firebase so remote is populated
+        const local = localStorage.getItem('smartStudents_final_v3');
+        if(local){
+          try{
+            await pushAppDataToFirebase(JSON.parse(local));
+          } catch(e){
+            console.warn('initial push failed', e);
+          }
+        }
+      }
+      return true;
+    } catch(err){
+      console.warn('firebaseSyncReady failed', err);
+      return false;
+    }
+  })();
 
 </script>
 </body>
