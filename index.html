@@ -467,18 +467,48 @@ async function renderViewTable(){
 // ---------- Edit Students (per year) ----------
 async function renderEditTable(){
   const allStudents = await dbGet('students') || {};
-  const years=[1,2,3]; let html='';
+  const years=[1,2,3]; 
+  let html='';
+
   years.forEach(y=>{
-    const studs = Object.entries(allStudents).filter(([,s])=>Number(s.year)===y).sort((a,b)=>a[0].localeCompare(b[0]));
+    const studs = Object.entries(allStudents)
+                .filter(([,s])=>Number(s.year)===y)
+                .sort((a,b)=>a[0].localeCompare(b[0]));
+
     html += `<h4>Year ${y}</h4>`;
-    html += '<table><thead><tr><th>SI No</th><th>PIN</th><th>Name</th><th>Action</th></tr></thead><tbody>';
-    studs.forEach(([pin,s],idx=>{
-      html += `<tr><td>${idx+1}</td><td>${pin}</td><td>${s.name}</td><td><button class="btn danger" onclick="deleteStudent('${pin}')">Delete</button></td></tr>`;
-    }));
-    html += '</tbody></table><div style="height:12px"></div>';
+    html += `
+      <table>
+        <thead>
+          <tr>
+            <th>SI No</th>
+            <th>PIN</th>
+            <th>Name</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    // ✅ FIXED → Correct arrow function
+    studs.forEach(([pin, s], idx) => {
+      html += `
+        <tr>
+          <td>${idx+1}</td>
+          <td>${pin}</td>
+          <td>${s.name}</td>
+          <td>
+            <button class="btn danger" onclick="deleteStudent('${pin}')">Delete</button>
+          </td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table><div style="height:12px"></div>`;
   });
+
   document.getElementById('edit-table-area').innerHTML = html;
 }
+
 
 // ---------- Add Student ----------
 async function addStudentFromForm(){
@@ -584,4 +614,5 @@ window._app = {
 </script>
 </body>
 </html>
+
 
