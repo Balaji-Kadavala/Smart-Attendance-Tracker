@@ -4,30 +4,34 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Smart Attendance Tracker</title>
-<link rel="icon" href="Facial_Recognition-removebg.png" />
+<link rel="icon" href="C:\SAT\Facial_Recognition-removebg.png" />
+
 <!-- Modern Attractive Theme -->
 <style>
 :root{
-  --bg:#eef2ff;
-  --card:#ffffff;
-  --primary:#6366f1;
-  --primary-dark:#4f46e5;
-  --text:#111827;
-  --muted:#6b7280;
-  --danger:#ef4444;
-  --success:#16a34a;
-  --radius:14px;
-  font-family:Inter, sans-serif;
+ --bg:#eef2ff;
+ --card:#ffffff;
+ --primary:#6366f1;
+ --primary-dark:#4f46e5;
+ --text:#111827;
+ --muted:#6b7280;
+ --danger:#ef4444;
+ --success:#16a34a;
+ --radius:14px;
+ font-family:Inter, sans-serif;
 }
+
 body{
   background:linear-gradient(180deg,#eef2ff,#e0e7ff);
   margin:0;color:var(--text);
 }
+
 .container{
   max-width:960px;
   margin:32px auto;
   padding:16px;
 }
+
 /* CARD */
 .card{
   background:var(--card);
@@ -35,10 +39,12 @@ body{
   border-radius:var(--radius);
   box-shadow:0 6px 20px rgba(0,0,0,.08);
 }
+
 /* HEADER */
 header{display:flex;gap:12px;align-items:center;margin-bottom:22px}
 .logo{width:60px;height:60px;border-radius:14px;overflow:hidden;border:2px solid #c7d2fe;display:flex;align-items:center;justify-content:center;background:#fff}
 .logo img{width:100%;height:100%;object-fit:contain}
+
 /* ROLE BUTTONS */
 .role-btn{
   background:var(--primary);
@@ -50,6 +56,7 @@ header{display:flex;gap:12px;align-items:center;margin-bottom:22px}
   font-weight:600;
 }
 .role-btn:hover{transform:scale(1.03);background:var(--primary-dark)}
+
 /* TABS */
 .tab-btn{
   padding:8px 14px;
@@ -63,6 +70,7 @@ header{display:flex;gap:12px;align-items:center;margin-bottom:22px}
   color:#fff;
   transform:translateY(-2px);
 }
+
 /* BUTTONS */
 .btn.primary{
   background:var(--primary);
@@ -81,6 +89,7 @@ header{display:flex;gap:12px;align-items:center;margin-bottom:22px}
   font-size:13px;
   border-radius:10px;
 }
+
 /* INPUTS */
 input,select{
   padding:8px 10px;
@@ -90,7 +99,9 @@ input,select{
   width:100%;
   max-width:260px;
 }
+
 input:focus,select:focus{outline:2px solid var(--primary)}
+
 .form-row{
   display:flex;
   gap:10px;
@@ -101,51 +112,97 @@ input:focus,select:focus{outline:2px solid var(--primary)}
   flex:1 1 auto;
   min-width:120px;
 }
+
 table{
   width:100%;
   border-collapse:collapse;
   margin-top:14px;
   font-size:14px;
 }
+
 th{
   background:#eef2ff;
   padding:10px;
   text-align:left;
 }
+
 td{
   padding:8px;
   border-bottom:1px solid #e5e7eb;
 }
-table-wrapper{ overflow-x:auto; }
+
+table-wrapper{
+  overflow-x:auto;
+}
+
 tr:hover{background:#f5f5ff}
+
 .status-p{color:var(--success);font-weight:700}
 .status-a{color:var(--danger);font-weight:700}
+
 .hidden{display:none}
 .flex{display:flex;gap:10px;align-items:center}
 .right{margin-left:auto}
-.note{color:var(--muted);font-size:13px}
-.small{font-size:13px}
-.muted{color:var(--muted)}
-/* MOBILE */
+
 @media(max-width:600px){
-  .container{ padding:10px; margin:10px; }
-  .card{ padding:16px; }
-  header h1{ font-size:20px; text-align:center; }
-  .role-btn{ width:100%; font-size:14px; }
-  .tab-btn{ width:100%; margin-bottom:6px; }
-  input, select{ width:100%; max-width:100%; }
-  .flex{ flex-wrap:wrap; }
-  .right{ margin-left:0; }
-  table{ font-size:13px; }
-  th,td{ padding:8px; }
-  #mark-table-area, #view-table-area, #edit-table-area{ overflow-x:auto; }
+
+  .container{
+    padding:10px;
+    margin:10px;
+  }
+
+  .card{
+    padding:16px;
+  }
+
+  header h1{
+    font-size:20px;
+    text-align:center;
+  }
+
+  .role-btn{
+    width:100%;
+    font-size:14px;
+  }
+
+  .tab-btn{
+    width:100%;
+    margin-bottom:6px;
+  }
+
+  input, select{
+    width:100%;
+    max-width:100%;
+  }
+
+  .flex{
+    flex-wrap:wrap;
+  }
+
+  .right{
+    margin-left:0;
+  }
+
+  table{
+    font-size:13px;
+  }
+
+  th,td{
+    padding:8px;
+  }
+
+  #mark-table-area, 
+  #view-table-area, 
+  #edit-table-area{
+    overflow-x:auto;
+  }
 }
 </style>
 </head>
 <body>
 <div class="container">
 <header>
- <div class="logo"><img src="Facial_Recognition-removebg.png" alt="logo"></div>
+ <div class="logo"><img src="C:\SAT\Facial_Recognition-removebg.png" alt="logo"></div>
  <h1>Smart Attendance Tracker</h1>
 </header>
 
@@ -205,29 +262,31 @@ tr:hover{background:#f5f5ff}
 
  <!-- VIEW -->
 <div id="section-view" class="hidden" style="margin-top:18px">
- <div class="flex">
-    <label>Choose Year:</label>
-    <select id="view-year" onchange="renderViewTable()">
-       <option value="1">1st</option>
-       <option value="2">2nd</option>
-       <option value="3">3rd</option>
-    </select>
-    <button class="btn primary right" onclick="exportCSV()">Download CSV</button>
- </div>
- <div id="view-table-area" style="margin-top:10px"></div>
+   <div class="flex">
+      <label>Choose Year:</label>
+      <select id="view-year" onchange="renderViewTable()">
+         <option value="1">1st</option>
+         <option value="2">2nd</option>
+         <option value="3">3rd</option>
+      </select>
+      <button class="btn primary right" onclick="exportCSV()">Download CSV</button>
+   </div>
+
+   <div id="view-table-area" style="margin-top:10px"></div>
 </div>
 
-<!-- EDIT -->
-<div id="section-edit" class="hidden" style="margin-top:18px">
- <form id="add-student-form" onsubmit="event.preventDefault(); addStudentFromForm()">
-   <div class="form-row" style="margin-top:8px">
-     <input id="new-pin" type="text" class="pin-input" placeholder="PIN (e.g. 25183-CM-001)" required />
-     <input id="new-name" type="text" placeholder="Student name" required />
-     <select id="new-year"><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>
-     <button class="btn primary" type="submit">Add</button>
-   </div>
- </form>
- <div id="edit-table-area" style="margin-top:12px"></div>
+ <!-- EDIT -->
+ <div id="section-edit" class="hidden" style="margin-top:18px">
+   <form id="add-student-form" onsubmit="event.preventDefault(); addStudentFromForm()">
+     <div class="form-row" style="margin-top:8px">
+       <input id="new-pin" type="text" class="pin-input" placeholder="PIN (e.g. 25183-CM-001)" required />
+       <input id="new-name" type="text" placeholder="Student name" required />
+       <select id="new-year"><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>
+       <button class="btn primary" type="submit">Add</button>
+     </div>
+   </form>
+   <div id="edit-table-area" style="margin-top:12px"></div>
+ </div>
 </div>
 
 <!-- STUDENT -->
@@ -242,13 +301,22 @@ tr:hover{background:#f5f5ff}
 
 </div>
 
-
+<!-- ==============================
+     FIREBASE + APP LOGIC
+================================= -->
 <script type="module">
-// ---------- Firebase Init and DB helper functions ----------
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getDatabase, ref, get, set, update, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
-// --- Firebase config (your config) ---
+/* -------------------------
+   FIREBASE SETUP
+-------------------------- */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+import { 
+  getDatabase, 
+  ref, 
+  set 
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCNGm7gErFVFS-zmd2zhnOGDBHqzK7hwUA",
   authDomain: "smart-attendance-tracker-dc3e0.firebaseapp.com",
@@ -256,122 +324,74 @@ const firebaseConfig = {
   storageBucket: "smart-attendance-tracker-dc3e0.firebasestorage.app",
   messagingSenderId: "874135444986",
   appId: "1:874135444986:web:11676820f7fe7fc6ab5843",
-  measurementId: "G-43FXHWMGZY"
+  measurementId: "G-43FXHWMGZY",
+  databaseURL: "https://smart-attendance-tracker-dc3e0-default-rtdb.firebaseio.com/"
 };
 
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 const db = getDatabase(app);
 
-// ---------- Simple DB helpers (Option A - PIN as key) ----------
-// path examples:
-// 'students' -> object of pins
-// 'students/23183-CM-001' -> { name, year }
-// 'attendance/2025-11-19_AM/present/23183-CM-001' -> true
-// 'attendance/2025-11-19_AM/locked' -> true
-
-async function dbGet(path) {
-  const snap = await get(ref(db, path));
-  return snap.exists() ? snap.val() : null;
-}
-async function dbSet(path, value) {
-  return set(ref(db, path), value);
-}
-async function dbUpdate(path, valueObj) {
-  return update(ref(db, path), valueObj);
-}
-async function dbPush(path, value) {
-  return push(ref(db, path), value);
-}
-function dbOnValue(path, callback) {
-  return onValue(ref(db, path), (snap) => { callback(snap.exists() ? snap.val() : null); });
-}
-async function dbRemovePath(path){
-  return remove(ref(db, path));
+/* ---------- Helper: Save full data to Firebase ---------- */
+function syncToFirebase(fullData) {
+  set(ref(db, "smartStudents_v2"), fullData)
+    .then(() => console.log("Firebase sync OK"))
+    .catch(err => console.error("Firebase sync error:", err));
 }
 
-// ---------- Seed default data if empty ----------
-async function seedIfEmptyFirebase() {
-  const students = await dbGet('students');
-  if (!students) {
-    // default students (same as previous localStorage seed)
-    const defaultStudents = {
-      "23183-CM-001": { name: "Ravi Kumar", year: 1 },
-      "23183-CM-002": { name: "Sita Reddy", year: 1 },
-      "24183-CM-001": { name: "Anil Shah", year: 2 },
-      "24183-CM-002": { name: "Geeta Devi", year: 2 },
-      "23183-CM-003": { name: "Mohan Das", year: 3 }
+/* -------------------------
+   ORIGINAL APP CODE BELOW
+   (UNCHANGED)
+-------------------------- */
+
+const STORAGE_KEY = 'smartStudents_v2';
+
+function seedIfEmpty(){
+  if(!localStorage.getItem(STORAGE_KEY)){
+    const data = { 
+      students:[
+        {pin:'23183-CM-001',name:'Ravi Kumar',year:1},
+        {pin:'23183-CM-002',name:'Sita Reddy',year:1},
+        {pin:'24183-CM-001',name:'Anil Shah',year:2},
+        {pin:'24183-CM-002',name:'Geeta Devi',year:2},
+        {pin:'23183-CM-003',name:'Mohan Das',year:3}
+      ], 
+      attendance:{} 
     };
-    await dbSet('students', defaultStudents);
-  }
-  // Ensure attendance node exists (empty object) to avoid null checks
-  const attendance = await dbGet('attendance');
-  if (!attendance) {
-    await dbSet('attendance', {});
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+    // also store initial data to firebase
+    syncToFirebase(data);
   }
 }
+seedIfEmpty();
 
-// call seed on load (fire-and-forget)
-seedIfEmptyFirebase().catch(err => console.error('Seed error', err));
-
-// expose helpers to window for debugging if needed
-window._fb = { dbGet, dbSet, dbUpdate, dbPush, dbOnValue, dbRemovePath };
-</script>
-
-<script type="module">
-/* ---------- App logic (Firebase-backed) ---------- */
-// Reuse helper functions exposed in Part 2
-// Wait until Firebase helpers are loaded
-async function waitForFB() {
-  while (!window._fb) {
-    await new Promise(r => setTimeout(r, 10));
-  }
-  return window._fb;
+function getData(){ 
+  return JSON.parse(localStorage.getItem(STORAGE_KEY)); 
 }
 
-const { dbGet, dbSet, dbUpdate, dbRemovePath } = await waitForFB();
-
-// ---------- Constants & Session logic ----------
-const ACADEMIC_START = new Date(2025,5,12); // June 12, 2025 (month index 5)
-function academicEndForStart(){ return new Date(ACADEMIC_START.getFullYear()+1,3,30); }
-function countWorkingDays(from, to){
-  let count=0; const d=new Date(from);
-  while(d<=to){ if(d.getDay()!==0) count++; d.setDate(d.getDate()+1); }
-  return count;
-}
-function getTotalWorkingDaysSoFar(){
-  const now=new Date(); const end = academicEndForStart();
-  const upto = now<end ? now : end; if(upto<ACADEMIC_START) return 0;
-  return countWorkingDays(ACADEMIC_START, upto);
-}
-function getSessionForNow(){
-  const d=new Date(); const h=d.getHours(); const m=d.getMinutes();
-  const minutes = h*60 + m;
-  const amStart = 10*60; const amEnd = 13*60 + 20;
-  const pmStart = 14*60; const pmEnd = 16*60 + 30;
-  if(minutes>=amStart && minutes<=amEnd) return 'AM';
-  if(minutes>=pmStart && minutes<=pmEnd) return 'PM';
-  return null;
-}
-function todayKey(session){
-  const d=new Date(); const y=d.getFullYear(); const mo=String(d.getMonth()+1).padStart(2,'0');
-  const da=String(d.getDate()).padStart(2,'0'); return `${y}-${mo}-${da}_${session}`;
+/* UPDATED: saveData NOW ALSO saves to Firebase */
+function saveData(d){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  syncToFirebase(d); // 🔥 auto sync always
 }
 
-// ---------- UI helpers ----------
-function hideAll(){ document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden')); }
-function backHome(){ hideAll(); document.getElementById('home').classList.remove('hidden'); }
-function openFaculty(){ hideAll(); document.getElementById('faculty-login').classList.remove('hidden'); }
-function openStudent(){ hideAll(); document.getElementById('student-screen').classList.remove('hidden'); }
+/* ------------------------
+   Rest of your original JS
+------------------------- */
 
-// Ensure role buttons colors remain OK (safe fallback)
-try {
-  document.getElementById('btn-student').style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary');
-  document.getElementById('btn-student').style.color = '#fff';
-  document.getElementById('btn-faculty').style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary');
-  document.getElementById('btn-faculty').style.color = '#fff';
-} catch(e){}
+/* UI helpers */
+function hideAll(){document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));}
+function backHome(){hideAll(); document.getElementById('home').classList.remove('hidden');}
+function openFaculty(){hideAll(); document.getElementById('faculty-login').classList.remove('hidden');}
+function openStudent(){hideAll(); document.getElementById('student-screen').classList.remove('hidden');}
 
-// ---------- Faculty auth (demo) ----------
+document.getElementById('btn-student').style.background = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+document.getElementById('btn-student').style.color = '#fff';
+document.getElementById('btn-faculty').style.background = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+document.getElementById('btn-faculty').style.color = '#fff';
+
+/* Faculty auth */
 function facultyLogin(){
   const u = document.getElementById('fac-user').value.trim();
   const p = document.getElementById('fac-pass').value.trim();
@@ -383,262 +403,284 @@ function facultyLogin(){
 function clearFaculty(){ document.getElementById('fac-user').value=''; document.getElementById('fac-pass').value=''; }
 function logoutFaculty(){ sessionStorage.removeItem('facultyUser'); backHome(); }
 
-// ---------- Tab management ----------
-function showSection(name) {
-  ['mark','view','edit'].forEach(s => document.getElementById('section-' + s).classList.add('hidden'));
-  ['tab-mark','tab-view','tab-edit'].forEach(id => document.getElementById(id).classList.remove('active'));
-  document.getElementById('section-' + name).classList.remove('hidden');
-  document.getElementById('tab-' + name).classList.add('active');
-  if (name === 'mark') renderMarkTable();
-  if (name === 'view') renderViewTable();
-  if (name === 'edit') renderEditTable();
+/* Sections */
+function showSection(name){
+  ['mark','view','edit'].forEach(s=>document.getElementById('section-'+s).classList.add('hidden'));
+  document.getElementById('section-'+name).classList.remove('hidden');
+  if(name==='mark') renderMarkTable();
+  if(name==='view') renderViewTable();
+  if(name==='edit') renderEditTable();
 }
 
-// ---------- Render Mark Table ----------
-async function renderMarkTable(){
+/* Session Logic */
+function getSessionForNow(){
+  const d=new Date(); const h=d.getHours(); const m=d.getMinutes();
+  const minutes = h*60 + m;
+  const amStart = 10*60; const amEnd = 13*60 + 20;
+  const pmStart = 14*60; const pmEnd = 16*60 + 30;
+  if(minutes>=amStart && minutes<=amEnd) return 'AM';
+  if(minutes>=pmStart && minutes<=pmEnd) return 'PM';
+  return null;
+}
+function todayKey(session){
+  const d=new Date(); 
+  const y=d.getFullYear(); 
+  const mo=String(d.getMonth()+1).padStart(2,'0'); 
+  const da=String(d.getDate()).padStart(2,'0'); 
+  return `${y}-${mo}-${da}_${session}`;
+}
+
+/* Academic Days */
+const ACADEMIC_START = new Date(2025,5,12);
+
+function academicEndForStart(){
+  const end = new Date(ACADEMIC_START.getFullYear()+1,3,30); return end;
+}
+
+function countWorkingDays(from, to){
+  let count=0; const d=new Date(from);
+  while(d<=to){
+    if(d.getDay()!==0) count++;
+    d.setDate(d.getDate()+1);
+  }
+  return count;
+}
+
+function getTotalWorkingDaysSoFar(){
+  const now=new Date(); const end = academicEndForStart();
+  const upto = now<end ? now : end;
+  if(upto<ACADEMIC_START) return 0;
+  return countWorkingDays(ACADEMIC_START, upto);
+}
+
+/* Mark Attendance Table */
+function renderMarkTable(){
   const year=Number(document.getElementById('mark-year').value);
   const session = getSessionForNow();
-  document.getElementById('session-label').innerText = `Session: ${session || 'None'}`;
-  const allStudents = await dbGet('students') || {};
-  // filter students by year and sort by pin lexicographically for stable order
-  const studs = Object.entries(allStudents).filter(([pin, s]) => Number(s.year) === year).sort((a,b)=>a[0].localeCompare(b[0]));
+  const sessionLabel = session || 'None';
+  document.getElementById('session-label').innerText = `Session: ${sessionLabel}`;
+  const data=getData(); 
+  const studs = data.students.filter(s=>s.year===year);
   const key = session ? todayKey(session) : null;
-  const attendanceRec = key ? (await dbGet(`attendance/${key}`) || {}) : {};
-  const presentObj = attendanceRec.present || {};
-  const locked = !!attendanceRec.locked;
+  const presentList = key && data.attendance[key] ? data.attendance[key].present : [];
+  const locked = key && data.attendance[key] && data.attendance[key].locked;
+
   let html = '';
   if(!session){
-    html += '<p class="note">Current time is outside marking windows. Student list is hidden until session opens.</p>';
+    html += '<p class="note">Current time is outside marking windows.</p>';
     document.getElementById('mark-table-area').innerHTML = html;
-    document.getElementById('save-marks').disabled=true;
+    document.getElementById('save-marks').disabled=true; 
     return;
   }
+
   html += '<table><thead><tr><th>SI No</th><th>PIN</th><th>Name</th><th>Present</th></tr></thead><tbody>';
-  studs.forEach(([pin, s], idx) => {
-    const checked = presentObj[pin] ? 'checked' : '';
+  studs.forEach((s,idx)=>{
+    const checked = presentList.includes(s.pin) ? 'checked' : '';
     const disabled = locked ? 'disabled' : '';
-    html += `<tr class="${locked? 'locked':''}"><td>${idx+1}</td><td>${pin}</td><td>${s.name}</td><td><input data-pin="${pin}" type="checkbox" ${checked} ${disabled}></td></tr>`;
+    html += `<tr><td>${idx+1}</td><td>${s.pin}</td><td>${s.name}</td><td><input data-pin="${s.pin}" type="checkbox" ${checked} ${disabled}></td></tr>`;
   });
   html += '</tbody></table>';
+
   document.getElementById('mark-table-area').innerHTML = html;
   document.getElementById('save-marks').disabled = locked;
 }
 
-// ---------- Save marks (lock attendance for session) ----------
-async function saveMarks(){
-  const session = getSessionForNow(); if(!session){ alert('Cannot save outside session times'); return; }
-  const key = todayKey(session);
-  const attendanceRec = await dbGet(`attendance/${key}`) || {};
-  if(attendanceRec.locked){ alert('Attendance already saved and locked for this session'); return; }
-  const checkboxes = document.querySelectorAll('#mark-table-area input[type="checkbox"]');
-  const presentObj = {};
-  checkboxes.forEach(cb => { if(cb.checked) presentObj[cb.dataset.pin] = true; });
-  // write present and locked = true
-  await dbSet(`attendance/${key}`, { locked: true, present: presentObj });
-  alert('Attendance saved and locked for ' + key);
+function saveMarks(){
+  const session = getSessionForNow(); 
+  if(!session){ alert('Cannot save outside session times'); return; }
+
+  const key = todayKey(session); 
+  const data = getData();
+
+  if(data.attendance[key] && data.attendance[key].locked){
+    alert('Attendance already saved'); 
+    return; 
+  }
+
+  const checkboxes = document.querySelectorAll('#mark-table-area input[type="checkbox"]'); 
+  const present=[];
+  checkboxes.forEach(cb=>{ if(cb.checked) present.push(cb.dataset.pin); });
+
+  data.attendance[key] = {locked:true, present};
+  saveData(data);
+  alert('Attendance saved');
   renderMarkTable();
 }
 
-// ---------- View Attendance ----------
-async function getTotalSessionsForYear(year){
-  const attendance = await dbGet('attendance') || {};
-  const allStudents = await dbGet('students') || {};
-  const yearPins = new Set(Object.entries(allStudents).filter(([,s])=>Number(s.year)===year).map(([pin])=>pin));
-  let count = 0;
-  for (const k in attendance){
-    const rec = attendance[k];
-    if(!rec) continue;
-    // if any present pin in this rec intersects yearPins
-    const present = rec.present || {};
-    for(const p in present){ if(yearPins.has(p)){ count++; break; } }
-  }
-  return count;
-}
-async function renderViewTable(){
+/* View Attendance */
+function renderViewTable(){
   const year = Number(document.getElementById('view-year').value);
-  const allStudents = await dbGet('students') || {};
-  const studs = Object.entries(allStudents).filter(([,s])=>Number(s.year)===year).sort((a,b)=>a[0].localeCompare(b[0]));
-  const attendance = await dbGet('attendance') || {};
+  const data = getData();
+  const studs = data.students.filter(s => s.year === year);
+
   const totalWorking = getTotalWorkingDaysSoFar();
+
   let html = `<p class="small muted">Total working days since 12-06-2025: ${totalWorking}</p>`;
-  html += '<table><thead><tr><th>SI No</th><th>PIN</th><th>Name</th><th>Days Present</th><th>Percentage</th></tr></thead><tbody>';
-  studs.forEach(([pin, s], idx) => {
+
+  html += '<table><thead><tr><th>SI No</th><th>PIN</th><th>Name</th>' +
+          '<th>Days Present</th><th>Percentage</th></tr></thead><tbody>';
+
+  studs.forEach((s, idx) => {
     let present = 0;
-    for(const k in attendance){ if(attendance[k].present && attendance[k].present[pin]) present++; }
+    for (const k in data.attendance) {
+      if(data.attendance[k].present.includes(s.pin)) present++;
+    }
     const percent = totalWorking === 0 ? 0 : Math.round((present / totalWorking) * 100);
-    html += `<tr><td>${idx+1}</td><td>${pin}</td><td>${s.name}</td><td>${present}</td><td>${percent}%</td></tr>`;
+
+    html += `<tr>
+               <td>${idx + 1}</td>
+               <td>${s.pin}</td>
+               <td>${s.name}</td>
+               <td>${present}</td>
+               <td>${percent}%</td>
+             </tr>`;
   });
+
   html += '</tbody></table>';
+
   document.getElementById('view-table-area').innerHTML = html;
 }
 
-// ---------- Edit Students (per year) ----------
-async function renderEditTable(){
-  const allStudents = await dbGet('students') || {};
-  const years=[1,2,3]; 
+/* Edit Students */
+function renderEditTable(){
+  const data=getData(); const years=[1,2,3]; 
   let html='';
-
   years.forEach(y=>{
-    const studs = Object.entries(allStudents)
-                .filter(([,s])=>Number(s.year)===y)
-                .sort((a,b)=>a[0].localeCompare(b[0]));
-
+    const studs = data.students.filter(s=>s.year===y);
     html += `<h4>Year ${y}</h4>`;
-    html += `
-      <table>
-        <thead>
-          <tr>
-            <th>SI No</th>
-            <th>PIN</th>
-            <th>Name</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-
-    // ✅ FIXED → Correct arrow function
-    studs.forEach(([pin, s], idx) => {
-      html += `
-        <tr>
-          <td>${idx+1}</td>
-          <td>${pin}</td>
-          <td>${s.name}</td>
-          <td>
-            <button class="btn danger" onclick="deleteStudent('${pin}')">Delete</button>
-          </td>
-        </tr>
-      `;
+    html += '<table><thead><tr><th>SI No</th><th>PIN</th><th>Name</th><th>Action</th></tr></thead><tbody>';
+    studs.forEach((s,idx)=>{
+      html += `<tr><td>${idx+1}</td><td>${s.pin}</td><td>${s.name}</td><td><button class="btn danger" onclick="deleteStudent('${s.pin}')">Delete</button></td></tr>`;
     });
-
-    html += `</tbody></table><div style="height:12px"></div>`;
+    html += '</tbody></table><div style="height:12px"></div>';
   });
-
   document.getElementById('edit-table-area').innerHTML = html;
 }
 
+function addStudentFromForm(){
+  const pin = document.getElementById('new-pin').value.trim(); 
+  const name=document.getElementById('new-name').value.trim(); 
+  const year=Number(document.getElementById('new-year').value);
 
-// ---------- Add Student ----------
-async function addStudentFromForm(){
-  const pin = document.getElementById('new-pin').value.trim();
-  const name = document.getElementById('new-name').value.trim();
-  const year = Number(document.getElementById('new-year').value);
   if(!pin || !name){ alert('Enter valid details'); return; }
-  const existing = await dbGet(`students/${pin}`);
-  if(existing){ alert('PIN already exists'); return; }
-  await dbSet(`students/${pin}`, { name, year });
-  document.getElementById('add-student-form').reset();
-  await renderEditTable();
+
+  const data=getData(); 
+  if(data.students.some(s=>s.pin===pin)){ alert('PIN already exists'); return; }
+
+  data.students.push({pin,name,year}); 
+  saveData(data); 
+  document.getElementById('add-student-form').reset(); 
+  renderEditTable(); 
   alert('Student added');
 }
 
-// ---------- Delete student ----------
-async function deleteStudent(pin){
-  if(!confirm('Delete student with PIN '+pin+'?')) return;
-  // remove student node
-  await dbSet(`students/${pin}`, null); // set null removes
-  // remove pin from all attendance present objects
-  const attendance = await dbGet('attendance') || {};
-  for(const k in attendance){
-    const rec = attendance[k];
-    if(rec && rec.present && rec.present[pin]){
-      // remove the key by setting present/<pin> = null
-      await dbSet(`attendance/${k}/present/${pin}`, null);
-    }
+function deleteStudent(pin){
+  if(!confirm('Delete student with PIN '+pin+'?')) return; 
+  const data=getData(); 
+  data.students = data.students.filter(s=>s.pin!==pin); 
+  for(const k in data.attendance){ 
+    data.attendance[k].present = data.attendance[k].present.filter(p=>p!==pin); 
   }
-  await renderEditTable();
+  saveData(data); 
+  renderEditTable();
 }
 
-// ---------- Student lookup & weekly table ----------
-async function studentLookup(){
-  const pin = document.getElementById('student-pin-input').value.trim();
+/* Student Lookup */
+function studentLookup(){
+  const pin = document.getElementById('student-pin-input').value.trim(); 
   if(!pin){ alert('Enter PIN'); return; }
-  const s = await dbGet(`students/${pin}`);
-  if(!s){ document.getElementById('student-result').innerHTML = `<p class="note">No student found with PIN ${pin}</p>`; return; }
-  // count present
-  const attendance = await dbGet('attendance') || {};
-  let present = 0;
-  for(const k in attendance){ if(attendance[k].present && attendance[k].present[pin]) present++; }
-  const totalWorking = getTotalWorkingDaysSoFar();
-  const percent = totalWorking === 0 ? 0 : Math.round((present / totalWorking) * 100);
+  const data=getData(); 
+  const s = data.students.find(x=>x.pin===pin);
+
+  if(!s){
+    document.getElementById('student-result').innerHTML = `<p class="note">No student found with PIN ${pin}</p>`;
+    return;
+  }
+
+  const totalWorking = getTotalWorkingDaysSoFar(); 
+  let present=0; 
+  for(const k in data.attendance){ 
+    if(data.attendance[k].present.includes(s.pin)) present++; 
+  }
+  const percent = totalWorking===0 ? 0 : Math.round((present/totalWorking)*100);
+
   let html = `<h3>${s.name} (Year ${s.year})</h3>`;
-  html += `<table><tr><th class="small">Total Days Present</th><td>${present}</td></tr><tr><th class="small">Total Working Days</th><td>${totalWorking}</td></tr><tr><th class="small">Percentage</th><td>${percent}%</td></tr></table>`;
-  const weekHtml = await generateWeeklyTableForPin(pin);
-  html += '<div style="height:12px"></div><h4>Weekly Attendance (Mon - Sat)</h4>' + weekHtml;
+  html += `<table>
+             <tr><th>Total Days Present</th><td>${present}</td></tr>
+             <tr><th>Total Working Days</th><td>${totalWorking}</td></tr>
+             <tr><th>Percentage</th><td>${percent}%</td></tr>
+           </table>`;
+
+  html += '<div style="height:12px"></div><h4>Weekly Attendance (Mon - Sat)</h4>';
+  html += generateWeeklyTableForPin(pin);
+
   document.getElementById('student-result').innerHTML = html;
 }
 
-async function generateWeeklyTableForPin(pin){
-  const attendance = await dbGet('attendance') || {};
-  const today = new Date(); const day = today.getDay(); // 0 Sun
-  const diff = (day+6)%7; const monday = new Date(today); monday.setDate(today.getDate()-diff);
+function generateWeeklyTableForPin(pin){
+  const data=getData(); 
+  const today=new Date(); 
+  const day = today.getDay();
+
+  const diff = (day+6)%7; 
+  const monday = new Date(today); 
+  monday.setDate(today.getDate()-diff);
+
   let html = '<table><thead><tr><th>Day</th><th>Date</th><th>Status</th></tr></thead><tbody>';
+
   for(let i=0;i<6;i++){
-    const d = new Date(monday); d.setDate(monday.getDate()+i);
+    const d = new Date(monday); 
+    d.setDate(monday.getDate()+i);
+
     const y=d.getFullYear(), mo=String(d.getMonth()+1).padStart(2,'0'), da=String(d.getDate()).padStart(2,'0');
-    const keyAM=`${y}-${mo}-${da}_AM`; const keyPM=`${y}-${mo}-${da}_PM`;
-    const recAM = attendance[keyAM] && attendance[keyAM].present && attendance[keyAM].present[pin];
-    const recPM = attendance[keyPM] && attendance[keyPM].present && attendance[keyPM].present[pin];
+    const keyAM=`${y}-${mo}-${da}_AM`; 
+    const keyPM=`${y}-${mo}-${da}_PM`;
+
+    const recAM = data.attendance[keyAM] ? data.attendance[keyAM].present.includes(pin) : false;
+    const recPM = data.attendance[keyPM] ? data.attendance[keyPM].present.includes(pin) : false;
     const present = recAM || recPM;
+
     const status = present ? `<span class="status-p">P</span>` : `<span class="status-a">A</span>`;
+
     html += `<tr><td>${['Mon','Tue','Wed','Thu','Fri','Sat'][i]}</td><td>${da}-${mo}-${y}</td><td>${status}</td></tr>`;
   }
-  html += '</tbody></table>';
+
+  html += '</tbody></table>'; 
   return html;
 }
 
-// ---------- CSV export ----------
-async function exportCSV(){
-  const year = Number(document.getElementById('view-year').value);
-  const allStudents = await dbGet('students') || {};
-  const studs = Object.entries(allStudents).filter(([,s])=>Number(s.year)===year).sort((a,b)=>a[0].localeCompare(b[0]));
-  const attendance = await dbGet('attendance') || {};
-  const totalWorking = getTotalWorkingDaysSoFar();
-  let csv = 'PIN,Name,DaysPresent,TotalWorkingDays,Percentage\n';
-  for(const [pin,s] of studs){
-    let present = 0;
-    for(const k in attendance){ if(attendance[k].present && attendance[k].present[pin]) present++; }
-    const percent = totalWorking === 0 ? 0 : Math.round((present / totalWorking) * 100);
-    csv += `${pin},"${s.name}",${present},${totalWorking},${percent}%\n`;
-  }
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `attendance_year${year}.csv`;
-  a.click();
+/* Export CSV */
+function exportCSV(){
+  const year=Number(document.getElementById('view-year').value); 
+  const data=getData(); 
+  const studs = data.students.filter(s=>s.year===year); 
+  const totalWorking = getTotalWorkingDaysSoFar(); 
+  let csv='PIN,Name,DaysPresent,TotalWorkingDays,Percentage\n'; 
+
+  studs.forEach(s=>{
+    let present=0; 
+    for(const k in data.attendance){ 
+      if(data.attendance[k].present.includes(s.pin)) present++; 
+    }
+    const percent = totalWorking===0 ? 0 : Math.round((present/totalWorking)*100); 
+    csv += `${s.pin},"${s.name}",${present},${totalWorking},${percent}%\n`; 
+  });
+
+  const blob=new Blob([csv],{type:'text/csv'}); 
+  const url=URL.createObjectURL(blob); 
+  const a=document.createElement('a'); 
+  a.href=url; 
+  a.download=`attendance_year${year}.csv`; 
+  a.click(); 
   URL.revokeObjectURL(url);
 }
 
-// ---------- Init ----------
-backHome();
+/* Init */
+backHome(); 
 renderEditTable();
-
-// Expose debug functions (optional)
-window._app = {
-  renderMarkTable, renderViewTable, renderEditTable, studentLookup, addStudentFromForm, saveMarks, deleteStudent
-};
-
-  // Expose functions to HTML (GLOBAL SCOPE FIX)
-window.openStudent = openStudent;
-window.openFaculty = openFaculty;
-window.backHome = backHome;
-window.showSection = showSection;
-
-window.saveMarks = saveMarks;
-window.renderMarkTable = renderMarkTable;
-window.renderViewTable = renderViewTable;
-window.renderEditTable = renderEditTable;
-
-window.addStudentFromForm = addStudentFromForm;
-window.deleteStudent = deleteStudent;
-window.studentLookup = studentLookup;
-window.exportCSV = exportCSV;
+window._debug={getData,saveData};
 
 </script>
+
 </body>
 </html>
-
-
-
-
