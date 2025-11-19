@@ -336,24 +336,7 @@ tr:hover{background:#f5f5ff}
   // students/{pin} -> { name, year }
   // attendance/{YYYY-MM-DD_SESSION} -> { locked: true/false, present: { "<pin>": true } }
 
-  // seed demo data only if /students is empty (won't overwrite existing)
-  async function seedIfEmptyFirebase(){
-    const snap = await get(child(ref(db), 'students'));
-    if(!snap.exists()){
-      const demo = {
-        "23183-CM-001": { name: "Ravi Kumar", year: 1 },
-        "23183-CM-002": { name: "Sita Reddy", year: 1 },
-        "24183-CM-001": { name: "Anil Shah", year: 2 },
-        "24183-CM-002": { name: "Geeta Devi", year: 2 },
-        "23183-CM-003": { name: "Mohan Das", year: 3 }
-      };
-      await set(ref(db, 'students'), demo);
-      console.log('Seeded demo students to Firebase.');
-    } else {
-      console.log('Students exist in Firebase — skipping seed.');
-    }
-  }
-
+ 
   // fetch students as map {pin:{name,year}}
   async function fetchStudentsMap(){
     const snap = await get(child(ref(db), 'students'));
@@ -436,16 +419,17 @@ tr:hover{background:#f5f5ff}
     const studs = Object.entries(students).filter(([pin,s]) => Number(s.year) === year).map(([pin,s]) => ({ pin, name: s.name, year: s.year }));
     const attendance = await fetchAttendance();
     const key = todayKey(session);
-    const rec = attendance && attendance[key] ? attendance[key] : null;
-    const presentMap = rec && rec.present ? rec.present : {};
-    const locked = rec && rec.locked;
+    const rec = attendance && attendance[key] ? attendance[key] : {};
+    const yearRec = rec[year] || {};
+    const presentMap = yearRec.present || {};
+    const locked = !!yearRec.locked;
 
     let html = '';
     html += '<table><thead><tr><th>SI No</th><th>PIN</th><th>Name</th><th>Present</th></tr></thead><tbody>';
     studs.forEach((s,idx)=>{
       const checked = presentMap && presentMap[s.pin] ? 'checked' : '';
       const disabled = locked ? 'disabled' : '';
-      html += `<tr class="hover-scale ${locked? 'locked':''}"><td>${idx+1}</td><td>${s.pin}</td><td>${s.name}</td><td><input data-pin="${s.pin}" type="checkbox" ${checked} ${disabled}></td></tr>`;
+      html += `<tr class="hover-scale ${locked? 'locked':''}"><td>${idx+1}</td><td>${s.pin}</td><td>${s.name}</td><td><input class="student-checkbox year-${year}" data-pin="${s.pin}" type="checkbox" ${checked} ${disabled}></td></tr>`;
     });
     html += '</tbody></table>';
     document.getElementById('mark-table-area').innerHTML = html;
@@ -453,20 +437,38 @@ tr:hover{background:#f5f5ff}
   }
 
   // ---------- Save Marks (to Firebase) ----------
-  async function saveMarks(){
-    const session = getSessionForNow(); if(!session){ alert('Cannot save outside session times'); return; }
-    const key = todayKey(session);
-    const attendanceRef = ref(db, `attendance/${key}`);
-    const snap = await get(attendanceRef);
-    if(snap.exists() && snap.val().locked){ alert('Attendance already saved and locked for this session'); return; }
-    const checkboxes = document.querySelectorAll('#mark-table-area input[type="checkbox"]');
-    const presentObj = {};
-    checkboxes.forEach(cb => { if(cb.checked) presentObj[cb.dataset.pin] = true; });
-    // Save as { locked: true, present: {pin:true, ...} }
-    await set(attendanceRef, { locked: true, present: presentObj });
-    alert('Attendance saved and locked for ' + key);
-    await renderMarkTable();
+async function saveMarks(){
+  const session = getSessionForNow();
+  if(!session){ alert('Cannot save outside session times'); return; }
+
+  const key = todayKey(session);
+  const year = Number(document.getElementById('mark-year').value);
+
+  // Check if this specific year under this session is already locked
+  const attendance = await fetchAttendance();
+  const sessionRec = attendance && attendance[key] ? attendance[key] : {};
+  const yearRec = sessionRec[year] || {};
+  if (yearRec.locked) {
+    alert('Attendance for this year is already saved and locked for this session.');
+    return;
   }
+
+  // Collect only checkboxes shown in the current table (these are current-year checkboxes)
+  const checkboxes = document.querySelectorAll('#mark-table-area input[type="checkbox"]');
+  const presentObj = {};
+  checkboxes.forEach(cb => { if(cb.checked) presentObj[cb.dataset.pin] = true; });
+
+  // Save only the current year under session key, preserving other years
+  const updates = {};
+  updates[`attendance/${key}/${year}`] = {
+    locked: true,
+    present: presentObj
+  };
+  await update(ref(db), updates);
+
+  alert('Attendance saved and locked for ' + key + ' (Year ' + year + ')');
+  await renderMarkTable();
+}
 
   // ---------- View Attendance ----------
   async function getTotalSessionsForYear(year){
@@ -484,28 +486,54 @@ tr:hover{background:#f5f5ff}
     return count;
   }
 
-  async function renderViewTable(){
-    const year = Number(document.getElementById('view-year').value);
-    const students = await fetchStudentsMap();
-    const studs = Object.entries(students).filter(([pin,s]) => Number(s.year)===year).map(([pin,s]) => ({ pin, name: s.name }));
-    const totalWorking = getTotalWorkingDaysSoFar();
-    const attendance = await fetchAttendance();
+  async function renderViewTable() {
+  const year = Number(document.getElementById('view-year').value);
+  const students = await fetchStudentsMap();
+  const studs = Object.entries(students)
+    .filter(([pin, s]) => Number(s.year) === year)
+    .map(([pin, s]) => ({ pin, name: s.name }));
 
-    let html = `<p class="small muted">Total working days since 12-06-2025: ${totalWorking}</p>`;
-    html += '<table><thead><tr><th>SI No</th><th>PIN</th><th>Name</th><th>Days Present</th><th>Percentage</th></tr></thead><tbody>';
+  const totalWorking = getTotalWorkingDaysSoFar();
+  const attendance = await fetchAttendance();
 
-    studs.forEach((s,idx)=>{
-      let present = 0;
-      for(const k in attendance){
-        if(attendance[k].present && attendance[k].present[s.pin]) present++;
+  let html = `<p class="small muted">Total working days since 12-06-2025: ${totalWorking}</p>`;
+  html += '<table><thead><tr><th>SI No</th><th>PIN</th><th>Name</th><th>Days Present</th><th>Percentage</th></tr></thead><tbody>';
+
+  studs.forEach((s, idx) => {
+    let present = 0;
+    for (const k in attendance) {
+      const sessionsYears = attendance[k];
+      if (sessionsYears) {
+        for (const yr in sessionsYears) {
+          const yrRec = sessionsYears[yr];
+          if (yrRec.present && yrRec.present[s.pin]) {
+            present += 0.5;
+            break;
+          }
+        }
       }
-      const percent = totalWorking === 0 ? 0 : Math.round((present / totalWorking) * 100);
-      html += `<tr><td>${idx+1}</td><td>${s.pin}</td><td>${s.name}</td><td>${present}</td><td>${percent}%</td></tr>`;
-    });
+    }
 
-    html += '</tbody></table>';
-    document.getElementById('view-table-area').innerHTML = html;
-  }
+    const presentDisplay = Number.isInteger(present)
+      ? present.toString()
+      : present.toFixed(1);
+
+    const percent =
+      totalWorking === 0 ? 0 : Math.round((present / totalWorking) * 100);
+
+    html += `<tr>
+      <td>${idx + 1}</td>
+      <td>${s.pin}</td>
+      <td>${s.name}</td>
+      <td>${presentDisplay}</td>
+      <td>${percent}%</td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('view-table-area').innerHTML = html;
+}
+
 
   // ---------- Edit Students ----------
   async function renderEditTable(){
@@ -563,10 +591,26 @@ tr:hover{background:#f5f5ff}
     const attendance = await fetchAttendance();
     const totalWorking = getTotalWorkingDaysSoFar();
     let present = 0;
-    for(const k in attendance){ if(attendance[k].present && attendance[k].present[pin]) present++; }
+    for(const k in attendance){
+const sessionsYears = attendance[k];
+if (sessionsYears) {
+  for (const yr in sessionsYears) {
+    const yrRec = sessionsYears[yr];
+    if (yrRec.present && yrRec.present[pin]) {
+      present+=0.5;
+      break;
+    }
+  }
+}
+  }
+const presentDisplay = Number.isInteger(present)
+  ? present.toString()
+  : present.toFixed(1);
+
     const percent = totalWorking===0?0:Math.round((present/(totalWorking))*100);
     let html = `<h3>${s.name} (Year ${s.year})</h3>`;
-    html += `<table><tr><th class="small">Total Days Present</th><td>${present}</td></tr><tr><th class="small">Total Working Days</th><td>${totalWorking}</td></tr><tr><th class="small">Percentage</th><td>${percent}%</td></tr></table>`;
+    html += `<table><tr><th class="small">Total Days Present</th><td>${presentDisplay}</td>
+</tr><tr><th class="small">Total Working Days</th><td>${totalWorking}</td></tr><tr><th class="small">Percentage</th><td>${percent}%</td></tr></table>`;
     html += '<div style="height:12px"></div><h4>Weekly Attendance (Mon - Sat)</h4>' + await generateWeeklyTableForPin(pin);
     document.getElementById('student-result').innerHTML = html;
   }
@@ -577,10 +621,32 @@ tr:hover{background:#f5f5ff}
     const diff = (day+6)%7; const monday = new Date(today); monday.setDate(today.getDate()-diff);
     let html = '<table><thead><tr><th>Day</th><th>Date</th><th>Status</th></tr></thead><tbody>';
     for(let i=0;i<6;i++){ const d = new Date(monday); d.setDate(monday.getDate()+i); const y=d.getFullYear(), mo=String(d.getMonth()+1).padStart(2,'0'), da=String(d.getDate()).padStart(2,'0'); const keyAM=`${y}-${mo}-${da}_AM`; const keyPM=`${y}-${mo}-${da}_PM`;
-      const recAM = attendance[keyAM] && attendance[keyAM].present && attendance[keyAM].present[pin];
-      const recPM = attendance[keyPM] && attendance[keyPM].present && attendance[keyPM].present[pin];
-      const present = recAM || recPM;
-      const status = present ? `<span class="status-p">P</span>` : `<span class="status-a">A</span>`;
+      // AM
+let recAM = false;
+if (attendance[keyAM]) {
+  for (const yr in attendance[keyAM]) {
+    const yrRec = attendance[keyAM][yr];
+    if (yrRec.present && yrRec.present[pin]) { recAM = true; break; }
+  }
+}
+
+// PM
+let recPM = false;
+if (attendance[keyPM]) {
+  for (const yr in attendance[keyPM]) {
+    const yrRec = attendance[keyPM][yr];
+    if (yrRec.present && yrRec.present[pin]) { recPM = true; break; }
+  }
+}
+
+      let status = '';
+if (recAM && recPM) {
+  status = `<span class="status-p">P</span>`;      // Full day
+} else if (recAM || recPM) {
+  status = `<span class="status-p">H</span>`;      // Half day
+} else {
+  status = `<span class="status-a">A</span>`;      // Absent
+}
       html += `<tr><td>${['Mon','Tue','Wed','Thu','Fri','Sat'][i]}</td><td>${da}-${mo}-${y}</td><td>${status}</td></tr>`;
     }
     html += '</tbody></table>'; return html;
@@ -596,7 +662,7 @@ tr:hover{background:#f5f5ff}
     let csv='PIN,Name,DaysPresent,TotalWorkingDays,Percentage\n';
     for(const s of studs){
       let present=0;
-      for(const k in attendance){ if(attendance[k].present && attendance[k].present[s.pin]) present++; }
+      for(const k in attendance){ if(attendance[k].present && attendance[k].present[s.pin]) present+=0.5; }
       const percent = totalWorking===0?0:Math.round((present/(totalWorking))*100);
       // escape name by wrapping in quotes
       csv += `${s.pin},"${s.name}",${present},${totalWorking},${percent}%\n`;
@@ -607,8 +673,7 @@ tr:hover{background:#f5f5ff}
 
   // ---------- Initialization ----------
   (async function init(){
-    await seedIfEmptyFirebase();
-    backHome();
+      backHome();
     await renderEditTable();
     // Expose debug API
     window._firebaseDebug = {
@@ -638,4 +703,3 @@ tr:hover{background:#f5f5ff}
 </script>
 </body>
 </html>
-
