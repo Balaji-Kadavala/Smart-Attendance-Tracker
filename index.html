@@ -611,8 +611,25 @@ window._app = {
   renderMarkTable, renderViewTable, renderEditTable, studentLookup, addStudentFromForm, saveMarks, deleteStudent
 };
 
+  // Expose functions to HTML (GLOBAL SCOPE FIX)
+window.openStudent = openStudent;
+window.openFaculty = openFaculty;
+window.backHome = backHome;
+window.showSection = showSection;
+
+window.saveMarks = saveMarks;
+window.renderMarkTable = renderMarkTable;
+window.renderViewTable = renderViewTable;
+window.renderEditTable = renderEditTable;
+
+window.addStudentFromForm = addStudentFromForm;
+window.deleteStudent = deleteStudent;
+window.studentLookup = studentLookup;
+window.exportCSV = exportCSV;
+
 </script>
 </body>
 </html>
+
 
 
