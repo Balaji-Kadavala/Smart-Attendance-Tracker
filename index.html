@@ -320,7 +320,15 @@ window._fb = { dbGet, dbSet, dbUpdate, dbPush, dbOnValue, dbRemovePath };
 <script type="module">
 /* ---------- App logic (Firebase-backed) ---------- */
 // Reuse helper functions exposed in Part 2
-const { dbGet, dbSet, dbUpdate } = window._fb;
+// Wait until Firebase helpers are loaded
+async function waitForFB() {
+  while (!window._fb) {
+    await new Promise(r => setTimeout(r, 10));
+  }
+  return window._fb;
+}
+
+const { dbGet, dbSet, dbUpdate, dbRemovePath } = await waitForFB();
 
 // ---------- Constants & Session logic ----------
 const ACADEMIC_START = new Date(2025,5,12); // June 12, 2025 (month index 5)
@@ -630,6 +638,7 @@ window.exportCSV = exportCSV;
 </script>
 </body>
 </html>
+
 
 
 
